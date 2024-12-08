@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Landing Page</title>
+    <style>
+        /* Global Styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+        .video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(5px);
+        }
+        .container {
+            position: relative;
+            z-index: 10;
+            color: white;
+        }
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 50px;
+        }
+        .hero h1 {
+            font-size: 60px;
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        .cta-btn {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background-color: #34c759;
+            color: white;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            opacity: 0;
+        }
+        .cta-btn:hover {
+            background-color: #28a745;
+            scale: 1.3;
+            transition: all 0.3s ease;
+           
+            
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Video -->
+    <video class="video-bg" autoplay loop muted>
+        <source src="https://videos.pexels.com/video-files/4696278/4696278-sd_640_360_30fps.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Landing Page Content -->
+    <div class="container">
+        <section class="hero">
+            <h1>Your Skin , Our Priority</h1>
+            <a href="/app"><button class="cta-btn">Get Started</button> </a>
+        </section>
+    </div>
+
+    <!-- GSAP and ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollTrigger.min.js"></script>
+    <script>
+        // GSAP Animation Setup
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero text animation
+        gsap.to(".hero h1", {
+            opacity: 1,
+            y: 0,
+            duration: 2,
+            delay: 1,
+            ease: "power4.out",
+        });
+
+        // CTA button animation
+        gsap.to(".cta-btn", {
+            opacity: 1,
+            duration: 1.5,
+            delay: 2,
+            ease: "power4.out",
+            y: -30,
+        });
+
+        // Parallax effect for background video
+        gsap.to(".video-bg", {
+            y: "30%",
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top top",
+                end: "bottom top",
+                scrub: true,
+            },
+        });
+
+        // Smooth scrolling animation (for scrolling sections)
+        gsap.utils.toArray('.section').forEach((section, index) => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 100,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true,
+                }
+            });
+        });
+    </script>
+</body>
+</html>
