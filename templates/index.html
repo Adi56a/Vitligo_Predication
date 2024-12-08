@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Disease Prediction</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: url('https://images.pexels.com/photos/29626041/pexels-photo-29626041/free-photo-of-abstract-3d-render-with-geometric-shapes.jpeg?auto=compress&cs=tinysrgb&w=600') no-repeat center center fixed;
+            background-size: cover;
+            color: #ecf0f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Container styling */
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: rgba(33, 33, 33, 0.8);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #bdc3c7;
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="file"] {
+            font-size: 1rem;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            width: 100%;
+            cursor: pointer;
+            opacity: 0;
+            position: absolute;
+        }
+
+        label {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            color: #fff;
+            background-color: #3498db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        label:hover {
+            background-color: #2980b9;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            color: #fff;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* Space between buttons */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Result Section */
+        #resultSection {
+            display: none;
+            margin-top: 30px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #2ecc71;
+        }
+
+        #predictionResult {
+            font-size: 1.25rem;
+            color: #ecf0f1;
+            margin-top: 10px;
+        }
+
+        /* Image Section */
+        #imageSection {
+            display: none;
+            margin-top: 20px;
+        }
+
+        img {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            margin-top: 15px;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin-top: 20px;
+        }
+
+        /* File name display */
+        .file-name {
+            margin-top: 15px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Fade-in animation for elements */
+        @keyframes fadeIn {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Spinner Animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Skin Disease Prediction</h1>
+        <p>Upload an image of your skin to predict the condition. Our model will analyze and return the result.</p>
+        
+        <div class="upload-section">
+            <input type="file" id="imageInput" accept="image/*" onchange="displayFileName()">
+            <label for="imageInput">Choose an Image</label>
+            <span id="fileName" class="file-name"></span> <!-- File name display -->
+            <button onclick="uploadImage()">Predict Disease</button>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="loading-spinner" style="display: none;"></div>
+
+        <!-- Result Section -->
+        <div id="resultSection">
+            <h3>Prediction Result:</h3>
+            <p id="predictionResult">Loading...</p>
+        </div>
+
+        <!-- Uploaded Image Section -->
+        <div id="imageSection">
+            <h3>Uploaded Image:</h3>
+            <img id="uploadedImage" alt="Uploaded Image">
+        </div>
+    </div>
+
+    <script>
+        gsap.from('.container', { opacity: 1, scale: 0.5, duration: 1 });
+
+        // Function to handle image upload and prediction request
+        function uploadImage() {
+            const imageInput = document.getElementById('imageInput');
+            const resultSection = document.getElementById('resultSection');
+            const imageSection = document.getElementById('imageSection');
+            const uploadedImage = document.getElementById('uploadedImage');
+            const predictionResult = document.getElementById('predictionResult');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Check if an image is selected
+            if (!imageInput.files[0]) {
+                alert("Please select an image first!");
+                return;
+            }
+
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+            resultSection.style.display = 'none'; // Hide the result section initially
+
+            // Prepare form data to send the image to the backend
+            const formData = new FormData();
+            formData.append("image", imageInput.files[0]);
+
+            // Display the uploaded image
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                uploadedImage.src = event.target.result;
+                imageSection.style.display = 'block';  // Show the image section
+            };
+            reader.readAsDataURL(imageInput.files[0]);
+
+            // Simulate a delay of 3 seconds before showing the prediction result
+            setTimeout(() => {
+                // Send the image to the backend for prediction using fetch API
+                fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    predictionResult.textContent = `Predicted Disease: ${data.prediction}`;
+                    loadingSpinner.style.display = 'none'; // Hide the loading spinner
+                    resultSection.style.display = 'block'; // Show the result section
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    predictionResult.textContent = "An error occurred. Please try again!";
+                    loadingSpinner.style.display = 'none'; // Hide the loading spinner
+                    resultSection.style.display = 'block'; // Show the result section
+                });
+            }, 3000); // 3 seconds delay
+        }
+
+        // Function to display the file name after choosing an image
+        function displayFileName() {
+            const fileInput = document.getElementById('imageInput');
+            const fileNameDisplay = document.getElementById('fileName');
+            if (fileInput.files.length > 0) {
+                fileNameDisplay.textContent = fileInput.files[0].name;
+            }
+        }
+    </script>
+</body>
+</html>
