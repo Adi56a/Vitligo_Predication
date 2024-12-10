@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify,render_template
+from flask import Flask, request, jsonify, render_template
 from werkzeug.utils import secure_filename
 import tensorflow as tf
 import numpy as np
@@ -13,8 +13,8 @@ model = tf.keras.models.load_model('skin_disease_model.h5')
 # Image size parameters (should match your model input)
 img_height, img_width = 224, 224
 
-# Define the class names (same as used in the training)
-class_names = ['dermatomyositis', 'morphea', 'normal', 'pityrasis_alba', 'psoriasis', 'vitiligo']
+# Define the class names (updated to include 'leprosy')
+class_names = ['dermatomyositis', 'leprosy', 'morphea', 'normal', 'pityrasis_alba', 'psoriasis', 'vitiligo']
 
 # Upload folder
 UPLOAD_FOLDER = 'uploads'
