@@ -32,7 +32,7 @@ validation_generator = datagen.flow_from_directory(
     subset='validation'
 )
 
-# Define the CNN model
+# Update the number of output classes (from 6 to 7)
 model = models.Sequential([
     layers.Conv2D(32, (3, 3), activation='relu', input_shape=(img_height, img_width, 3)),
     layers.MaxPooling2D((2, 2)),
@@ -43,7 +43,7 @@ model = models.Sequential([
     layers.Flatten(),
     layers.Dense(512, activation='relu'),
     layers.Dropout(0.5),
-    layers.Dense(6, activation='softmax')  # 6 classes for prediction
+    layers.Dense(7, activation='softmax')  # 7 classes for prediction, including 'leprosy'
 ])
 
 # Compile the model
@@ -76,8 +76,8 @@ def predict_skin_disease(image_path):
     prediction = model.predict(img_array)
     class_index = np.argmax(prediction, axis=1)
     
-    # Mapping the predicted class index to the class name
-    class_names = ['dermatomyositis', 'morphea', 'normal', 'pityrasis_alba', 'psoriasis', 'vitiligo']
+    # Update class names to include 'leprosy'
+    class_names = ['dermatomyositis', 'leprosy', 'morphea', 'normal', 'pityrasis_alba', 'psoriasis', 'vitiligo']
     predicted_class = class_names[class_index[0]]
     
     return predicted_class
