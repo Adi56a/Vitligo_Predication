@@ -13,8 +13,8 @@ model = tf.keras.models.load_model('skin_disease_model.h5')
 # Image size parameters (should match your model input)
 img_height, img_width = 224, 224
 
-# Define the class names (updated to include 'leprosy')
-class_names = ['dermatomyositis', 'leprosy', 'morphea', 'normal', 'pityrasis_alba', 'psoriasis', 'vitiligo']
+# Define the class names (updated to match the 5 classes in model.py)
+class_names = ['leprosy', 'pityrasis_alba', 'vitiligo', 'igh', 'pih']
 
 # Upload folder
 UPLOAD_FOLDER = 'uploads'
